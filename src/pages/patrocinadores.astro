@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const patrocinadores = await getCollection('patrocinadores');
+const niveles = ['Main Sponsor', 'Colaborador', 'Proveedor Oficial'] as const;
+---
+
+<Layout
+  title="Patrocinadores"
+  description="Sponsors y colaboradores del Club Deportivo El Bonillo Fútbol Sala."
+>
+  <section class="mx-auto max-w-3xl px-6 py-14">
+    <h1 class="font-display text-3xl text-stone">Patrocinadores</h1>
+    <p class="mt-3 max-w-prose text-stone/70">
+      El club compite gracias al respaldo de los negocios de El Bonillo que creen en este proyecto.
+    </p>
+
+    {
+      niveles.map((nivel) => {
+        const delNivel = patrocinadores.filter((s) => s.data.nivel === nivel);
+        if (delNivel.length === 0) return null;
+        return (
+          <div class="mt-10">
+            <h2 class="font-display text-lg text-plum">{nivel}</h2>
+            <div class="mt-4 flex flex-wrap items-center gap-x-10 gap-y-6">
+              {delNivel.map((sponsor) => (
+                <a
+                  href={sponsor.data.url ?? undefined}
+                  class="flex h-14 items-center"
+                  aria-label={sponsor.data.nombre}
+                >
+                  <img
+                    src={sponsor.data.logo}
+                    alt={sponsor.data.nombre}
+                    class="max-h-14 w-auto grayscale transition-all hover:grayscale-0"
+                  />
+                </a>
+              ))}
+            </div>
+          </div>
+        );
+      })
+    }
+  </section>
+</Layout>

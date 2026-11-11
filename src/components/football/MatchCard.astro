@@ -1,0 +1,39 @@
+---
+interface Props {
+  equipoLocal: string;
+  equipoVisitante: string;
+  fecha: Date;
+  ubicacion: string;
+  resultado?: { golesLocal: number; golesVisitante: number };
+}
+
+const { equipoLocal, equipoVisitante, fecha, ubicacion, resultado } = Astro.props;
+
+const dia = new Intl.DateTimeFormat('es-ES', { day: '2-digit' }).format(fecha);
+const mes = new Intl.DateTimeFormat('es-ES', { month: 'short' }).format(fecha).replace('.', '');
+const hora = new Intl.DateTimeFormat('es-ES', { timeStyle: 'short' }).format(fecha);
+---
+
+<article class="flex items-center gap-6 border-t border-stone/10 py-5 first:border-t-0">
+  <div class="w-14 shrink-0 text-center">
+    <p class="font-display text-3xl leading-none text-plum">{dia}</p>
+    <p class="mt-1 text-xs text-stone/60">{mes}</p>
+  </div>
+
+  <div class="min-w-0 flex-1">
+    <p class="font-display text-lg text-stone">
+      {equipoLocal} <span class="text-stone/40">—</span> {equipoVisitante}
+    </p>
+    <p class="mt-1 text-sm text-stone/60">{hora} h · {ubicacion}</p>
+  </div>
+
+  {
+    resultado && (
+      <p class="shrink-0 font-display text-2xl text-plum">
+        {resultado.golesLocal}
+        <span class="text-stone/40">:</span>
+        {resultado.golesVisitante}
+      </p>
+    )
+  }
+</article>

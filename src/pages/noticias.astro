@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const noticias = (await getCollection('noticias')).sort(
+  (a, b) => b.data.fechaPublicacion.valueOf() - a.data.fechaPublicacion.valueOf()
+);
+---
+
+<Layout
+  title="Noticias"
+  description="Actualidad, comunicados oficiales y crónicas del Club Deportivo El Bonillo Fútbol Sala."
+>
+  <section class="mx-auto max-w-3xl px-6 py-14">
+    <h1 class="font-display text-3xl text-stone">Noticias</h1>
+    <div class="mt-6">
+      {
+        noticias.length > 0 ? (
+          noticias.map((noticia) => (
+            <article class="border-t border-stone/10 py-6 first:border-t-0">
+              <p class="text-xs text-stone/50">
+                {new Intl.DateTimeFormat('es-ES', { dateStyle: 'long' }).format(noticia.data.fechaPublicacion)}
+              </p>
+              <h2 class="mt-1 font-display text-xl text-stone">{noticia.data.titulo}</h2>
+              <p class="mt-2 text-stone/70">{noticia.data.resumen}</p>
+            </article>
+          ))
+        ) : (
+          <p class="border-t border-stone/10 py-5 text-stone/60">Sin noticias por el momento.</p>
+        )
+      }
+    </div>
+  </section>
+</Layout>

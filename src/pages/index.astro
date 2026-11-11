@@ -1,0 +1,122 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/ui/Button.astro';
+import MatchCard from '../components/football/MatchCard.astro';
+import equipoPortada from '../assets/images/equipo-portada.jpg';
+import escudoClub from '../assets/images/escudo-club.svg';
+
+const proximoPartido = (await getCollection('partidos'))
+  .filter((p) => !p.data.finalizado)
+  .sort((a, b) => a.data.fecha.valueOf() - b.data.fecha.valueOf())[0];
+
+const patrocinadores = await getCollection('patrocinadores');
+---
+
+<Layout
+  title="Inicio"
+  description="Web oficial del Club Deportivo El Bonillo Fútbol Sala: calendario, plantilla, noticias y patrocinadores."
+>
+  <section class="hero relative isolate overflow-hidden bg-ink">
+    <Image
+      src={equipoPortada}
+      alt=""
+      aria-hidden="true"
+      widths={[640, 1132]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+      class="hero__photo absolute inset-0 -z-30 h-full w-full object-cover"
+    />
+    <div class="hero__tint absolute inset-0 -z-20"></div>
+    <div class="hero__scrim absolute inset-0 -z-10"></div>
+
+    <div class="relative mx-auto flex min-h-[70vh] max-w-6xl flex-col justify-end px-6 py-16 sm:min-h-[78vh] sm:py-24">
+      <h1 class="max-w-xl font-display text-4xl leading-[1.05] text-limestone sm:text-6xl">
+        Un equipo. Un pueblo.
+      </h1>
+      <p class="mt-5 max-w-md text-balance text-limestone/80">
+        El Club Deportivo El Bonillo Fútbol Sala compite representando a su gente,
+        partido a partido, temporada tras temporada.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <Button href="/calendario">Ver calendario</Button>
+        <Button href="/plantilla" variant="outline-light">Conocer la plantilla</Button>
+      </div>
+    </div>
+  </section>
+
+  {
+    proximoPartido && (
+      <section class="mx-auto max-w-6xl px-6 py-14">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="font-display text-2xl text-stone">Próximo partido</h2>
+          <a href="/calendario" class="text-sm text-plum hover:text-gold">
+            Ver todo el calendario
+          </a>
+        </div>
+        <div class="mt-2">
+          <MatchCard
+            equipoLocal={proximoPartido.data.equipoLocal}
+            equipoVisitante={proximoPartido.data.equipoVisitante}
+            fecha={proximoPartido.data.fecha}
+            ubicacion={proximoPartido.data.ubicacion}
+          />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="bg-ink-soft">
+    <div class="mx-auto flex max-w-6xl flex-col items-start gap-8 px-6 py-16 sm:flex-row sm:items-center">
+      <Image src={escudoClub} alt="Escudo del club" width={96} height={96} class="h-24 w-24 shrink-0" />
+      <p class="font-display text-xl leading-snug text-limestone sm:text-2xl">
+        Un club de pueblo que lleva el nombre de El Bonillo a cada pista en la que juega,
+        sostenido por sus socios, sus jugadores y los negocios que lo patrocinan.
+      </p>
+    </div>
+  </section>
+
+  {
+    patrocinadores.length > 0 && (
+      <section class="mx-auto max-w-6xl px-6 py-14">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="font-display text-2xl text-stone">Con el apoyo de</h2>
+          <a href="/patrocinadores" class="text-sm text-plum hover:text-gold">
+            Ver patrocinadores
+          </a>
+        </div>
+        <div class="mt-6 flex flex-wrap items-center gap-x-10 gap-y-6">
+          {patrocinadores.map((sponsor) => (
+            <img
+              src={sponsor.data.logo}
+              alt={sponsor.data.nombre}
+              class="h-10 w-auto grayscale transition-all hover:grayscale-0"
+            />
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Layout>
+
+<style>
+  .hero__photo {
+    filter: blur(6px) saturate(1.1);
+    transform: scale(1.06);
+    object-position: 50% 30%;
+  }
+
+  .hero__tint {
+    background: var(--color-plum);
+    mix-blend-mode: color;
+    opacity: 0.55;
+  }
+
+  .hero__scrim {
+    background:
+      linear-gradient(to top, var(--color-ink) 0%, color-mix(in srgb, var(--color-ink) 25%, transparent) 55%, transparent 85%),
+      linear-gradient(to right, color-mix(in srgb, var(--color-ink) 35%, transparent) 0%, transparent 65%);
+  }
+</style>

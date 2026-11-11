@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PlayerCard from '../components/football/PlayerCard.astro';
+
+const jugadores = (await getCollection('jugadores')).sort(
+  (a, b) => a.data.dorsal - b.data.dorsal
+);
+---
+
+<Layout
+  title="Plantilla"
+  description="Cuerpo técnico y plantilla de jugadores del Club Deportivo El Bonillo Fútbol Sala."
+>
+  <section class="mx-auto max-w-3xl px-6 py-14">
+    <h1 class="font-display text-3xl text-stone">Plantilla</h1>
+    <div class="mt-6">
+      {
+        jugadores.length > 0 ? (
+          jugadores.map((jugador) => (
+            <PlayerCard
+              nombre={jugador.data.nombre}
+              apellidos={jugador.data.apellidos}
+              dorsal={jugador.data.dorsal}
+              posicion={jugador.data.posicion}
+              foto={jugador.data.foto}
+            />
+          ))
+        ) : (
+          <p class="border-t border-stone/10 py-5 text-stone/60">
+            La plantilla se publicará próximamente.
+          </p>
+        )
+      }
+    </div>
+  </section>
+</Layout>

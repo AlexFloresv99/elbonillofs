@@ -1,0 +1,93 @@
+---
+import BaseHead from './BaseHead.astro';
+import { Image } from 'astro:assets';
+import escudoClub from '../assets/images/escudo-club.svg';
+import escudoAyuntamiento from '../assets/images/escudo-ayuntamiento.png';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Web oficial del Club Deportivo El Bonillo Fútbol Sala.',
+} = Astro.props;
+
+const navLinks = [
+  { href: '/calendario', label: 'Calendario' },
+  { href: '/plantilla', label: 'Plantilla' },
+  { href: '/noticias', label: 'Noticias' },
+  { href: '/patrocinadores', label: 'Patrocinadores' },
+  { href: '/contacto', label: 'Contacto' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body class="flex min-h-screen flex-col font-body text-stone">
+    <header class="relative z-20 bg-ink">
+      <nav class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4">
+        <a href="/" class="flex items-center gap-3">
+          <Image src={escudoClub} alt="Escudo del club" width={40} height={40} class="h-10 w-10" />
+          <span class="font-display text-lg text-limestone">
+            El Bonillo <span class="text-gold">F. S.</span>
+          </span>
+        </a>
+        <ul class="flex flex-wrap items-center gap-x-7 gap-y-2 text-sm text-limestone/80">
+          {
+            navLinks.map((link) => {
+              const active = currentPath.startsWith(link.href);
+              return (
+                <li>
+                  <a
+                    href={link.href}
+                    aria-current={active ? 'page' : undefined}
+                    class:list={[
+                      'border-b border-transparent pb-0.5 transition-colors hover:text-gold',
+                      active && 'border-gold text-gold',
+                    ]}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </nav>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="bg-ink text-limestone/70">
+      <div class="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-12 sm:flex-row sm:items-start sm:justify-between">
+        <div class="flex items-center gap-4">
+          <Image src={escudoClub} alt="Escudo del club" width={48} height={48} class="h-12 w-12" />
+          <Image
+            src={escudoAyuntamiento}
+            alt="Escudo del Ayuntamiento de El Bonillo"
+            width={40}
+            height={44}
+            class="h-11 w-auto"
+          />
+        </div>
+        <div class="text-sm leading-relaxed sm:text-right">
+          <p class="font-display text-base text-limestone">Club Deportivo El Bonillo Fútbol Sala</p>
+          <p>Villa de El Bonillo · Albacete · Castilla-La Mancha</p>
+          <p class="mt-3 text-limestone/50">
+            &copy; {new Date().getFullYear()} Club Deportivo El Bonillo Fútbol Sala
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

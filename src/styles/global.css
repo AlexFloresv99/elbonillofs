@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@import "@fontsource-variable/fraunces/standard.css";
+@import "@fontsource-variable/fraunces/standard-italic.css";
+@import "@fontsource/work-sans/400.css";
+@import "@fontsource/work-sans/500.css";
+@import "@fontsource/work-sans/600.css";
+
+@theme {
+  --color-ink: #15111c;
+  --color-ink-soft: #241c2c;
+  --color-plum: #4b2e55;
+  --color-gold: #d9a441;
+  --color-gold-bright: #f0c36b;
+  --color-limestone: #f3eee4;
+  --color-stone: #262026;
+
+  --font-display: "Fraunces Variable", "Fraunces", ui-serif, serif;
+  --font-body: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    color: var(--color-stone);
+  }
+
+  body {
+    background-color: var(--color-limestone);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

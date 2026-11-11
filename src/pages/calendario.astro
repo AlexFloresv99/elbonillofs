@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import MatchCard from '../components/football/MatchCard.astro';
+
+const partidos = (await getCollection('partidos')).sort(
+  (a, b) => a.data.fecha.valueOf() - b.data.fecha.valueOf()
+);
+---
+
+<Layout
+  title="Calendario y Resultados"
+  description="Próximos partidos, resultados y clasificación del Club Deportivo El Bonillo Fútbol Sala."
+>
+  <section class="mx-auto max-w-3xl px-6 py-14">
+    <h1 class="font-display text-3xl text-stone">Calendario y resultados</h1>
+    <div class="mt-6">
+      {
+        partidos.length > 0 ? (
+          partidos.map((partido) => (
+            <MatchCard
+              equipoLocal={partido.data.equipoLocal}
+              equipoVisitante={partido.data.equipoVisitante}
+              fecha={partido.data.fecha}
+              ubicacion={partido.data.ubicacion}
+              resultado={partido.data.resultado}
+            />
+          ))
+        ) : (
+          <p class="border-t border-stone/10 py-5 text-stone/60">
+            Todavía no hay partidos programados.
+          </p>
+        )
+      }
+    </div>
+  </section>
+</Layout>

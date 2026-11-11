@@ -1,0 +1,27 @@
+---
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'outline-light' | 'outline-dark';
+  class?: string;
+}
+
+const { href, variant = 'primary', class: className = '' } = Astro.props;
+const Tag = href ? 'a' : 'button';
+
+const variants = {
+  primary: 'bg-gold text-ink hover:bg-gold-bright',
+  'outline-light': 'border border-limestone/40 text-limestone hover:border-gold hover:text-gold',
+  'outline-dark': 'border border-stone/30 text-stone hover:border-plum hover:text-plum',
+};
+---
+
+<Tag
+  href={href}
+  class:list={[
+    'inline-block px-5 py-2.5 text-sm font-medium transition-colors',
+    variants[variant],
+    className,
+  ]}
+>
+  <slot />
+</Tag>
