@@ -33,8 +33,12 @@ const partidos = defineCollection({
     equipoLocal: z.string(),
     equipoVisitante: z.string(),
     fecha: z.coerce.date(),
+    // La federación publica la hora unos días antes. Mientras tanto, `fecha`
+    // solo indica el día de la jornada y la hora no debe mostrarse.
+    horaPorConfirmar: z.boolean().default(false),
     ubicacion: z.string(),
     categoria: z.string(),
+    competicion: z.string().optional(),
     jornada: z.number().int().optional(),
     resultado: z
       .object({

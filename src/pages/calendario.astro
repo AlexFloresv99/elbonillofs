@@ -2,36 +2,187 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import MatchCard from '../components/football/MatchCard.astro';
+import { esLocal, formatoFecha, ordenarPorFecha, proximoPartido, rival, type Partido } from '../lib/partidos';
 
-const partidos = (await getCollection('partidos')).sort(
-  (a, b) => a.data.fecha.valueOf() - b.data.fecha.valueOf()
+const TOTAL_JORNADAS = 26;
+const JORNADAS_POR_VUELTA = TOTAL_JORNADAS / 2;
+const competicion = 'Primera Autonómica Sala, Grupo 3';
+const temporada = '2026-27';
+const urlFederacion =
+  'https://www.ffcm.es/pnfg/NPcd/NFG_VisClasificacion?cod_primaria=1000120&codcompeticion=22916226&codgrupo=23193709';
+
+const partidos = ordenarPorFecha(
+  (await getCollection('partidos')).filter((p) => p.data.competicion === competicion)
 );
+const siguiente = proximoPartido(partidos);
+
+// Las jornadas sin partido son las de descanso del equipo.
+const porJornada = new Map(partidos.map((p) => [p.data.jornada, p]));
+const jornadas = Array.from({ length: TOTAL_JORNADAS }, (_, i) => ({
+  numero: i + 1,
+  partido: porJornada.get(i + 1) as Partido | undefined,
+}));
+const vueltas = [
+  { titulo: 'Primera vuelta', jornadas: jornadas.slice(0, JORNADAS_POR_VUELTA) },
+  { titulo: 'Segunda vuelta', jornadas: jornadas.slice(JORNADAS_POR_VUELTA) },
+];
+
+const etiqueta = ({ numero, partido }: (typeof jornadas)[number]) =>
+  partido
+    ? `Jornada ${numero}: ${esLocal(partido) ? 'contra' : 'en casa de'} ${rival(partido)}, ${formatoFecha.larga(partido.data.fecha)}`
+    : `Jornada ${numero}: descanso`;
 ---
 
 <Layout
-  title="Calendario y Resultados"
-  description="Próximos partidos, resultados y clasificación del Club Deportivo El Bonillo Fútbol Sala."
+  title="Calendario"
+  description={`Calendario del Club Deportivo El Bonillo Fútbol Sala en ${competicion}, temporada ${temporada}: fechas, horarios y pabellones.`}
 >
   <section class="mx-auto max-w-3xl px-6 py-14">
-    <h1 class="font-display text-3xl text-stone">Calendario y resultados</h1>
-    <div class="mt-6">
+    <h1 class="font-display text-4xl text-stone">Calendario</h1>
+    <p class="mt-2 text-stone/70">{competicion}, temporada {temporada}.</p>
+
+    <nav aria-label="Temporada por jornadas" class="mt-10">
       {
-        partidos.length > 0 ? (
-          partidos.map((partido) => (
-            <MatchCard
-              equipoLocal={partido.data.equipoLocal}
-              equipoVisitante={partido.data.equipoVisitante}
-              fecha={partido.data.fecha}
-              ubicacion={partido.data.ubicacion}
-              resultado={partido.data.resultado}
-            />
-          ))
-        ) : (
-          <p class="border-t border-stone/10 py-5 text-stone/60">
-            Todavía no hay partidos programados.
-          </p>
-        )
+        vueltas.map((vuelta) => (
+          <div class="season-row" aria-label={vuelta.titulo}>
+            {vuelta.jornadas.map((j) => {
+              const p = j.partido;
+              return (
+                <a
+                  href={`#jornada-${j.numero}`}
+                  title={etiqueta(j)}
+                  aria-label={etiqueta(j)}
+                  class:list={[
+                    'cell',
+                    !p && 'cell--rest',
+                    p && (esLocal(p) ? 'cell--home' : 'cell--away'),
+                    p?.data.finalizado && 'cell--played',
+                    p && p === siguiente && 'cell--next',
+                  ]}
+                >
+                  {j.numero}
+                </a>
+              );
+            })}
+          </div>
+        ))
       }
-    </div>
+      <ul class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-stone/70">
+        <li class="flex items-center gap-2"><span class="swatch cell--home"></span>En casa</li>
+        <li class="flex items-center gap-2"><span class="swatch cell--away"></span>Fuera</li>
+        <li class="flex items-center gap-2"><span class="swatch cell--rest"></span>Descanso</li>
+        <li class="flex items-center gap-2"><span class="swatch cell--next cell--away"></span>Próximo partido</li>
+      </ul>
+    </nav>
+
+    {
+      partidos.length === 0 ? (
+        <p class="mt-10 border-t border-stone/10 py-5 text-stone/60">
+          Todavía no hay partidos programados.
+        </p>
+      ) : (
+        vueltas.map((vuelta) => (
+          <section class="mt-14">
+            <h2 class="border-b border-stone/15 pb-2 font-display text-2xl text-stone">{vuelta.titulo}</h2>
+            <div class="mt-1">
+              {vuelta.jornadas.map((j) =>
+                j.partido ? (
+                  <MatchCard id={`jornada-${j.numero}`} partido={j.partido} destacado={j.partido === siguiente} />
+                ) : (
+                  <p
+                    id={`jornada-${j.numero}`}
+                    class="scroll-mt-24 border-t border-dashed border-stone/15 py-4 pl-17 text-sm text-stone/50 sm:pl-20"
+                  >
+                    Jornada {j.numero}: el equipo descansa.
+                  </p>
+                )
+              )}
+            </div>
+          </section>
+        ))
+      )
+    }
+
+    <p class="mt-14 border-t border-stone/10 pt-6 text-sm text-stone/70">
+      Las horas se confirman en la semana de cada partido. La clasificación y los resultados de todo el grupo
+      están en la
+      <a href={urlFederacion} class="text-plum underline underline-offset-2 hover:text-gold" rel="external">
+        web de la Federación de Fútbol de Castilla-La Mancha</a
+      >.
+    </p>
   </section>
 </Layout>
+
+<style>
+  .season-row {
+    display: grid;
+    grid-template-columns: repeat(13, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .season-row + .season-row {
+    margin-top: 4px;
+  }
+
+  .cell,
+  .swatch {
+    display: grid;
+    place-items: center;
+    border: 1.5px solid var(--color-plum);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cell {
+    aspect-ratio: 1;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: transform 120ms ease-out;
+  }
+
+  .cell:hover {
+    transform: translateY(-2px);
+  }
+
+  .swatch {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .cell--home {
+    background: var(--color-plum);
+    color: var(--color-limestone);
+  }
+
+  .cell--away {
+    background: transparent;
+    color: var(--color-plum);
+  }
+
+  .cell--rest {
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--color-stone) 30%, transparent);
+    color: color-mix(in srgb, var(--color-stone) 40%, transparent);
+  }
+
+  .cell--played {
+    opacity: 0.35;
+  }
+
+  .cell--next {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 2px var(--color-gold);
+  }
+
+  .cell--next.cell--away {
+    background: var(--color-gold);
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 30rem) {
+    .cell {
+      font-size: 0.6875rem;
+      border-width: 1px;
+    }
+  }
+</style>

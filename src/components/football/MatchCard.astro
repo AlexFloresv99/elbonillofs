@@ -1,39 +1,81 @@
 ---
+import { NOMBRE_CLUB, esLocal, formatoFecha, type Partido } from '../../lib/partidos';
+
 interface Props {
-  equipoLocal: string;
-  equipoVisitante: string;
-  fecha: Date;
-  ubicacion: string;
-  resultado?: { golesLocal: number; golesVisitante: number };
+  partido: Partido;
+  /** Marca visualmente el siguiente partido a disputar. */
+  destacado?: boolean;
+  id?: string;
 }
 
-const { equipoLocal, equipoVisitante, fecha, ubicacion, resultado } = Astro.props;
+const { partido, destacado = false, id } = Astro.props;
+const { equipoLocal, equipoVisitante, fecha, ubicacion, resultado, finalizado, horaPorConfirmar, jornada } =
+  partido.data;
 
-const dia = new Intl.DateTimeFormat('es-ES', { day: '2-digit' }).format(fecha);
-const mes = new Intl.DateTimeFormat('es-ES', { month: 'short' }).format(fecha).replace('.', '');
-const hora = new Intl.DateTimeFormat('es-ES', { timeStyle: 'short' }).format(fecha);
+const local = esLocal(partido);
+const equipos = [equipoLocal, equipoVisitante];
+const diaSemana = formatoFecha.diaSemana(fecha);
+const cuando =
+  diaSemana.charAt(0).toUpperCase() +
+  diaSemana.slice(1) +
+  (horaPorConfirmar ? ', hora por confirmar' : `, ${formatoFecha.hora(fecha)} h`);
 ---
 
-<article class="flex items-center gap-6 border-t border-stone/10 py-5 first:border-t-0">
-  <div class="w-14 shrink-0 text-center">
-    <p class="font-display text-3xl leading-none text-plum">{dia}</p>
-    <p class="mt-1 text-xs text-stone/60">{mes}</p>
+<article
+  id={id}
+  class:list={[
+    'match relative flex scroll-mt-24 items-start gap-5 border-t border-stone/10 py-5 first:border-t-0 sm:gap-6',
+    destacado && 'match--next',
+    finalizado && 'text-stone/70',
+  ]}
+>
+  <div class="w-12 shrink-0 text-center sm:w-14">
+    <p class:list={['font-display text-3xl leading-none', finalizado ? 'text-stone/40' : 'text-plum']}>
+      {formatoFecha.dia(fecha)}
+    </p>
+    <p class="mt-1 text-xs text-stone/60">{formatoFecha.mes(fecha)}</p>
   </div>
 
   <div class="min-w-0 flex-1">
-    <p class="font-display text-lg text-stone">
-      {equipoLocal} <span class="text-stone/40">—</span> {equipoVisitante}
+    <p class="text-xs text-stone/60">
+      {jornada && <>Jornada {jornada}, </>}
+      <span class:list={[local ? 'text-plum' : 'text-stone/60']}>{local ? 'en casa' : 'fuera'}</span>
+      {destacado && <span class="ml-2 bg-gold px-1.5 py-0.5 font-medium text-ink">Próximo partido</span>}
     </p>
-    <p class="mt-1 text-sm text-stone/60">{hora} h · {ubicacion}</p>
+    <p class="mt-1 font-display text-lg leading-snug text-stone">
+      {
+        equipos.map((equipo, i) => (
+          <>
+            {i === 1 && <span class="text-stone/30"> – </span>}
+            <span class:list={[equipo === NOMBRE_CLUB && 'font-semibold text-plum']}>{equipo}</span>
+          </>
+        ))
+      }
+    </p>
+    <p class="mt-1 text-sm text-stone/60">{cuando}</p>
+    <p class="text-sm text-stone/60">{ubicacion}</p>
   </div>
 
   {
-    resultado && (
-      <p class="shrink-0 font-display text-2xl text-plum">
+    resultado ? (
+      <p class="shrink-0 self-center font-display text-2xl text-plum tabular-nums">
         {resultado.golesLocal}
-        <span class="text-stone/40">:</span>
+        <span class="text-stone/30">–</span>
         {resultado.golesVisitante}
       </p>
+    ) : (
+      finalizado && <p class="shrink-0 self-center text-xs text-stone/50">Jugado</p>
     )
   }
 </article>
+
+<style>
+  .match--next::before {
+    content: '';
+    position: absolute;
+    inset-block: 0.75rem;
+    left: -1rem;
+    width: 3px;
+    background: var(--color-gold);
+  }
+</style>

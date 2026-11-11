@@ -4,12 +4,11 @@ import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Button from '../components/ui/Button.astro';
 import MatchCard from '../components/football/MatchCard.astro';
+import { proximoPartido as siguientePartido } from '../lib/partidos';
 import equipoPortada from '../assets/images/equipo-portada.jpg';
 import escudoClub from '../assets/images/escudo-club.svg';
 
-const proximoPartido = (await getCollection('partidos'))
-  .filter((p) => !p.data.finalizado)
-  .sort((a, b) => a.data.fecha.valueOf() - b.data.fecha.valueOf())[0];
+const proximoPartido = siguientePartido(await getCollection('partidos'));
 
 const patrocinadores = await getCollection('patrocinadores');
 ---
@@ -57,12 +56,7 @@ const patrocinadores = await getCollection('patrocinadores');
           </a>
         </div>
         <div class="mt-2">
-          <MatchCard
-            equipoLocal={proximoPartido.data.equipoLocal}
-            equipoVisitante={proximoPartido.data.equipoVisitante}
-            fecha={proximoPartido.data.fecha}
-            ubicacion={proximoPartido.data.ubicacion}
-          />
+          <MatchCard partido={proximoPartido} />
         </div>
       </section>
     )
