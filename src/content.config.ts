@@ -71,4 +71,37 @@ const patrocinadores = defineCollection({
   }),
 });
 
-export const collections = { jugadores, partidos, noticias, patrocinadores };
+const balance = z.object({
+  jugados: z.number().int().min(0),
+  ganados: z.number().int().min(0),
+  empatados: z.number().int().min(0),
+  perdidos: z.number().int().min(0),
+});
+
+// Una entrada por competición: la tabla tal y como queda tras `jornada`.
+const clasificacion = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/clasificacion' }),
+  schema: z.object({
+    competicion: z.string(),
+    temporada: z.string(),
+    jornada: z.number().int(),
+    fechaJornada: z.coerce.date(),
+    fuente: z.url().optional(),
+    equipos: z.array(
+      z.object({
+        posicion: z.number().int().min(1),
+        equipo: z.string(),
+        puntos: z.number().int(),
+        casa: balance,
+        fuera: balance,
+        golesFavor: z.number().int().min(0),
+        golesContra: z.number().int().min(0),
+        // Últimos resultados en el orden en que los publica la federación.
+        ultimos: z.array(z.enum(['G', 'E', 'P'])).default([]),
+        puntosSancion: z.number().int().default(0),
+      })
+    ),
+  }),
+});
+
+export const collections = { jugadores, partidos, noticias, patrocinadores, clasificacion };

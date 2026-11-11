@@ -1,0 +1,143 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { NOMBRE_CLUB, formatoFecha } from '../../lib/partidos';
+
+interface Props {
+  clasificacion: CollectionEntry<'clasificacion'>;
+}
+
+const { jornada, fechaJornada, equipos, fuente } = Astro.props.clasificacion.data;
+
+const filas = [...equipos]
+  .sort((a, b) => a.posicion - b.posicion)
+  .map((e) => {
+    const sum = (k: 'jugados' | 'ganados' | 'empatados' | 'perdidos') => e.casa[k] + e.fuera[k];
+    const dg = e.golesFavor - e.golesContra;
+    return {
+      ...e,
+      pj: sum('jugados'),
+      g: sum('ganados'),
+      em: sum('empatados'),
+      p: sum('perdidos'),
+      dg: dg > 0 ? `+${dg}` : String(dg),
+      club: e.equipo === NOMBRE_CLUB,
+    };
+  });
+
+const resultado = { G: 'Ganado', E: 'Empatado', P: 'Perdido' } as const;
+const detalle = 'hidden px-2 text-center sm:table-cell';
+---
+
+<div class="overflow-x-auto">
+  <table class="standings w-full border-collapse text-sm tabular-nums">
+    <caption class="pb-3 text-left text-sm text-stone/70">
+      Tras la jornada {jornada}, del {formatoFecha.diaMes(fechaJornada)}. Ordenada por puntos por partido
+      jugado, como la publica la federación.
+    </caption>
+    <thead>
+      <tr class="border-b border-stone/20 text-xs text-stone/60">
+        <th scope="col" class="w-8 py-2 pr-2 text-right font-normal"><abbr title="Posición">Pos</abbr></th>
+        <th scope="col" class="py-2 pl-3 text-left font-normal">Equipo</th>
+        <th scope="col" class="px-2 text-center font-medium text-stone"><abbr title="Puntos">Pts</abbr></th>
+        <th scope="col" class="px-2 text-center font-normal"><abbr title="Partidos jugados">PJ</abbr></th>
+        <th scope="col" class:list={[detalle, 'font-normal']}><abbr title="Ganados">G</abbr></th>
+        <th scope="col" class:list={[detalle, 'font-normal']}><abbr title="Empatados">E</abbr></th>
+        <th scope="col" class:list={[detalle, 'font-normal']}><abbr title="Perdidos">P</abbr></th>
+        <th scope="col" class:list={[detalle, 'font-normal']}><abbr title="Goles a favor">GF</abbr></th>
+        <th scope="col" class:list={[detalle, 'font-normal']}><abbr title="Goles en contra">GC</abbr></th>
+        <th scope="col" class="px-2 text-center font-normal"><abbr title="Diferencia de goles">DG</abbr></th>
+        <th scope="col" class="hidden pl-3 text-left font-normal md:table-cell">Últimos</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        filas.map((f) => (
+          <tr class:list={['border-b border-stone/10', f.club && 'row--club']}>
+            <td class="py-2.5 pr-2 text-right font-display text-base">{f.posicion}</td>
+            <th scope="row" class:list={['py-2.5 pl-3 text-left font-normal', f.club && 'font-semibold']}>
+              {f.equipo}
+              {f.puntosSancion > 0 && (
+                <span class="ml-1 text-xs opacity-70">(−{f.puntosSancion} pts por sanción)</span>
+              )}
+            </th>
+            <td class="px-2 text-center font-display text-base font-semibold">{f.puntos}</td>
+            <td class="px-2 text-center">{f.pj}</td>
+            <td class={detalle}>{f.g}</td>
+            <td class={detalle}>{f.em}</td>
+            <td class={detalle}>{f.p}</td>
+            <td class={detalle}>{f.golesFavor}</td>
+            <td class={detalle}>{f.golesContra}</td>
+            <td class="px-2 text-center">{f.dg}</td>
+            <td class="hidden pl-3 md:table-cell">
+              <span class="flex gap-0.5">
+                {f.ultimos.map((r) => (
+                  <span class:list={['form', `form--${r}`]} title={resultado[r]}>
+                    <span aria-hidden="true">{r}</span>
+                    <span class="sr-only">{resultado[r]}</span>
+                  </span>
+                ))}
+              </span>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+{
+  fuente && (
+    <p class="mt-3 text-xs text-stone/60">
+      Datos de la{' '}
+      <a href={fuente} rel="external" class="text-plum underline underline-offset-2 hover:text-gold">
+        Federación de Fútbol de Castilla-La Mancha
+      </a>
+      .
+    </p>
+  )
+}
+
+<style>
+  abbr {
+    text-decoration: none;
+  }
+
+  .row--club {
+    background: var(--color-plum);
+    color: var(--color-limestone);
+  }
+
+  .form {
+    display: grid;
+    place-items: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+  }
+
+  .form--G {
+    background: var(--color-plum);
+    color: var(--color-limestone);
+  }
+
+  .form--E {
+    background: var(--color-gold);
+    color: var(--color-ink);
+  }
+
+  .form--P {
+    background: color-mix(in srgb, var(--color-stone) 12%, transparent);
+    color: var(--color-stone);
+  }
+
+  /* Dentro de la fila del club, la victoria necesita contraste sobre el morado. */
+  .row--club .form--G {
+    background: var(--color-limestone);
+    color: var(--color-plum);
+  }
+
+  .row--club .form--P {
+    background: color-mix(in srgb, var(--color-limestone) 20%, transparent);
+    color: var(--color-limestone);
+  }
+</style>

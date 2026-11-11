@@ -23,6 +23,7 @@ export const formatoFecha = {
   dia: (d: Date) => fmt({ day: 'numeric' }).format(d),
   mes: (d: Date) => fmt({ month: 'short' }).format(d).replace('.', ''),
   diaSemana: (d: Date) => fmt({ weekday: 'long' }).format(d),
+  diaMes: (d: Date) => fmt({ day: 'numeric', month: 'long' }).format(d),
   larga: (d: Date) => fmt({ weekday: 'long', day: 'numeric', month: 'long' }).format(d),
   hora: (d: Date) => fmt({ hour: '2-digit', minute: '2-digit' }).format(d),
 };
