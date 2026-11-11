@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Button from '../components/ui/Button.astro';
 import MatchCard from '../components/football/MatchCard.astro';
+import SponsorMarquee from '../components/ui/SponsorMarquee.astro';
 import { proximoPartido as siguientePartido } from '../lib/partidos';
 import equipoPortada from '../assets/images/equipo-portada.jpg';
 import escudoClub from '../assets/images/escudo-club.svg';
@@ -74,21 +75,15 @@ const patrocinadores = await getCollection('patrocinadores');
 
   {
     patrocinadores.length > 0 && (
-      <section class="mx-auto max-w-6xl px-6 py-14">
-        <div class="flex items-baseline justify-between gap-4">
+      <section class="py-14">
+        <div class="mx-auto flex max-w-6xl items-baseline justify-between gap-4 px-6">
           <h2 class="font-display text-2xl text-stone">Con el apoyo de</h2>
           <a href="/patrocinadores" class="text-sm text-plum hover:text-gold">
             Ver patrocinadores
           </a>
         </div>
-        <div class="mt-6 flex flex-wrap items-center gap-x-10 gap-y-6">
-          {patrocinadores.map((sponsor) => (
-            <img
-              src={sponsor.data.logo}
-              alt={sponsor.data.nombre}
-              class="h-10 w-auto grayscale transition-all hover:grayscale-0"
-            />
-          ))}
+        <div class="mt-6">
+          <SponsorMarquee patrocinadores={patrocinadores} />
         </div>
       </section>
     )

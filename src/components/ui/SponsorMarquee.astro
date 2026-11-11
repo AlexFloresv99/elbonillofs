@@ -1,0 +1,94 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import SponsorCard from './SponsorCard.astro';
+
+interface Props {
+  patrocinadores: CollectionEntry<'patrocinadores'>[];
+  /** Segundos que tarda cada tarjeta en recorrer su propio ancho. */
+  segundosPorTarjeta?: number;
+}
+
+const { patrocinadores, segundosPorTarjeta = 3.5 } = Astro.props;
+const duracion = `${patrocinadores.length * segundosPorTarjeta}s`;
+---
+
+<div class="marquee" style={`--marquee-duration: ${duracion}`}>
+  <!-- La lista se repite una vez para que el bucle no tenga corte. -->
+  <div class="marquee__track">
+    <ul class="marquee__group" aria-label="Patrocinadores del club">
+      {
+        patrocinadores.map((p) => (
+          <li>
+            <SponsorCard patrocinador={p} />
+          </li>
+        ))
+      }
+    </ul>
+    <ul class="marquee__group marquee__group--copy" aria-hidden="true">
+      {
+        patrocinadores.map((p) => (
+          <li>
+            <SponsorCard patrocinador={p} decorativa />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    padding-block: 0.5rem;
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee var(--marquee-duration) linear infinite;
+  }
+
+  /* Pausa al pasar el ratón o al navegar con teclado por las tarjetas. */
+  .marquee:hover .marquee__track,
+  .marquee:focus-within .marquee__track {
+    animation-play-state: paused;
+  }
+
+  .marquee__group {
+    display: flex;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Separación con padding (no gap) para que -50% caiga justo en la copia. */
+  .marquee__group > li {
+    padding-right: 1rem;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      overflow-x: auto;
+      mask-image: none;
+    }
+
+    .marquee__track {
+      animation: none;
+    }
+
+    .marquee__group--copy {
+      display: none;
+    }
+  }
+</style>

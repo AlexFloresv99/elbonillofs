@@ -63,12 +63,17 @@ const noticias = defineCollection({
 
 const patrocinadores = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/patrocinadores' }),
-  schema: z.object({
-    nombre: z.string(),
-    logo: z.string(),
-    url: z.url().optional(),
-    nivel: z.enum(['Main Sponsor', 'Colaborador', 'Proveedor Oficial']),
-  }),
+  // `logo` es una ruta relativa al JSON dentro de src/assets, para que Astro
+  // optimice la imagen. Con el CMS pasará a ser una URL remota.
+  schema: ({ image }) =>
+    z.object({
+      nombre: z.string(),
+      logo: image(),
+      // Color de fondo del propio logo: los de fondo oscuro van en tarjeta oscura.
+      fondo: z.enum(['claro', 'oscuro']).default('claro'),
+      url: z.url().optional(),
+      nivel: z.enum(['Main Sponsor', 'Colaborador', 'Proveedor Oficial']),
+    }),
 });
 
 const balance = z.object({
