@@ -13,7 +13,7 @@ const jugadores = defineCollection({
     nombre: z.string(),
     apellidos: z.string(),
     dorsal: z.number().int().min(0).max(99),
-    posicion: z.enum(['Portero', 'Cierre', 'Ala', 'Pívot', 'Entrenador']),
+    posicion: z.enum(['Portero', 'Cierre', 'Ala', 'Pívot', 'Entrenador', 'Delegado']),
     categoria: z.string(),
     foto: z.string().optional(),
     estadisticas: z

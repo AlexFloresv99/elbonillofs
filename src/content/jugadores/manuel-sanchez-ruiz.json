@@ -1,0 +1,8 @@
+{
+  "nombre": "Manuel",
+  "apellidos": "Sanchez Ruiz",
+  "dorsal": 3,
+  "posicion": "Portero",
+  "categoria": "Primer Equipo",
+  "foto": "/img/escudo-club.svg"
+}
