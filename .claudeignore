@@ -1,0 +1,37 @@
+# --- Dependencias ---
+node_modules/
+.pnpm-store/
+
+# --- Archivos generados por Astro y compilación ---
+dist/
+.astro/
+.vercel/
+.netlify/
+.output/
+
+# --- Control de versiones y sistema ---
+.git/
+.DS_Store
+Thumbs.db
+
+# --- Cachés y logs ---
+.cache/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Archivos sensibles y entorno ---
+.env
+.env.*
+!.env.example
+
+# --- Archivos de lock (consumen muchos tokens sin aportar contexto de código) ---
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# --- Cobertura de tests ---
+coverage/
