@@ -6,6 +6,7 @@
 // Uso:
 //   node scripts/actualizar-clasificacion.js            # refresca la jornada guardada en cada fichero
 //   node scripts/actualizar-clasificacion.js 5          # descarga la jornada 5 para todos los ficheros
+//   node scripts/actualizar-clasificacion.js --auto     # usa la última jornada ya disputada según src/content/partidos (para CI)
 //
 // La URL de origen (cod_primaria/codcompeticion/codgrupo) se lee del campo
 // "fuente" que ya guarda cada fichero de clasificación.
@@ -65,15 +66,16 @@ function limpiarTexto(html) {
 
 async function descargarHtml(url) {
   const cabeceras = { 'User-Agent': 'Mozilla/5.0' };
+  const timeout = AbortSignal.timeout(30_000);
   // La FFCM exige una sesión: la primera petición responde 302 y fija la
   // cookie JSESSIONID; con esa cookie la segunda petición ya sirve el HTML.
-  const primera = await fetch(url, { headers: cabeceras, redirect: 'manual' });
+  const primera = await fetch(url, { headers: cabeceras, redirect: 'manual', signal: timeout });
   const cookies = primera.headers.getSetCookie();
   if (cookies.length === 0) {
     throw new Error(`No se ha recibido cookie de sesión (status ${primera.status}) para ${url}`);
   }
   const cookieHeader = cookies.map((c) => c.split(';')[0]).join('; ');
-  const segunda = await fetch(url, { headers: { ...cabeceras, Cookie: cookieHeader } });
+  const segunda = await fetch(url, { headers: { ...cabeceras, Cookie: cookieHeader }, signal: timeout });
   if (!segunda.ok) {
     throw new Error(`HTTP ${segunda.status} al descargar ${url}`);
   }
@@ -134,12 +136,28 @@ function buscarFechaJornada(competicion, jornada) {
   return null;
 }
 
-async function actualizarFichero(nombreFichero, jornadaSolicitada) {
+// Última jornada de la competición con algún partido ya disputado (fecha
+// anterior al inicio del día de hoy). Devuelve null si no hay ninguna.
+function ultimaJornadaDisputada(competicion) {
+  const hoy = new Date().toISOString().slice(0, 10);
+  let ultima = null;
+  for (const nombreFichero of readdirSync(PARTIDOS_DIR)) {
+    const partido = JSON.parse(readFileSync(join(PARTIDOS_DIR, nombreFichero), 'utf8'));
+    if (partido.competicion !== competicion || !partido.jornada) continue;
+    if (partido.fecha.slice(0, 10) < hoy && (ultima === null || partido.jornada > ultima)) {
+      ultima = partido.jornada;
+    }
+  }
+  return ultima;
+}
+
+async function actualizarFichero(nombreFichero, jornadaSolicitada, auto) {
   const ruta = join(CLASIFICACION_DIR, nombreFichero);
   const actual = JSON.parse(readFileSync(ruta, 'utf8'));
 
   const urlFuente = new URL(actual.fuente);
-  const jornada = jornadaSolicitada ?? actual.jornada;
+  const jornada =
+    jornadaSolicitada ?? (auto ? ultimaJornadaDisputada(actual.competicion) : null) ?? actual.jornada;
   urlFuente.searchParams.set('codjornada', String(jornada));
 
   console.log(`\n${nombreFichero}: descargando jornada ${jornada} de ${actual.competicion}...`);
@@ -167,7 +185,9 @@ async function actualizarFichero(nombreFichero, jornadaSolicitada) {
 }
 
 async function main() {
-  const jornadaArg = process.argv[2];
+  const args = process.argv.slice(2);
+  const auto = args.includes('--auto');
+  const jornadaArg = args.find((a) => !a.startsWith('--'));
   const jornadaSolicitada = jornadaArg ? Number(jornadaArg) : null;
   if (jornadaArg && !Number.isInteger(jornadaSolicitada)) {
     console.error(`Jornada inválida: "${jornadaArg}"`);
@@ -177,7 +197,7 @@ async function main() {
   const ficheros = readdirSync(CLASIFICACION_DIR).filter((f) => f.endsWith('.json'));
   for (const fichero of ficheros) {
     try {
-      await actualizarFichero(fichero, jornadaSolicitada);
+      await actualizarFichero(fichero, jornadaSolicitada, auto);
     } catch (err) {
       console.error(`  ✗ Error actualizando ${fichero}: ${err.message}`);
       process.exitCode = 1;

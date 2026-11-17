@@ -1,0 +1,43 @@
+name: Actualizar clasificación
+
+on:
+  schedule:
+    # Domingo y lunes por la noche (tras las jornadas) y miércoles (aplazados).
+    # Hora UTC: 21:30 UTC = 22:30/23:30 en Madrid.
+    - cron: '30 21 * * 0,1,3'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizar-clasificacion
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      # Si la FFCM falla o cambia su HTML, el script sale con error y el job
+      # falla antes de llegar al commit: nunca se suben datos a medias.
+      - name: Descargar clasificación
+        run: node scripts/actualizar-clasificacion.js --auto
+
+      - name: Commit y push si hay cambios
+        run: |
+          if git diff --quiet -- src/content/clasificacion; then
+            echo "Sin cambios en la clasificación."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/content/clasificacion
+          git commit -m "chore: actualiza clasificación automáticamente"
+          git push
