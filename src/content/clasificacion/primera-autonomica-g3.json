@@ -1,14 +1,14 @@
 {
   "competicion": "Primera Autonómica Sala, Grupo 3",
   "temporada": "2026-27",
-  "jornada": 4,
-  "fechaJornada": "2026-11-07",
-  "fuente": "https://www.ffcm.es/pnfg/NPcd/NFG_VisClasificacion?cod_primaria=1000120&codjornada=4&codcompeticion=22916226&codgrupo=23193709",
+  "jornada": 5,
+  "fechaJornada": "2026-11-14",
+  "fuente": "https://www.ffcm.es/pnfg/NPcd/NFG_VisClasificacion?cod_primaria=1000120&codjornada=5&codcompeticion=22916226&codgrupo=23193709",
   "equipos": [
     {
       "posicion": 1,
       "equipo": "Fútbol Sala Quintanar del Rey",
-      "puntos": 9,
+      "puntos": 12,
       "casa": {
         "jugados": 2,
         "ganados": 2,
@@ -16,14 +16,15 @@
         "perdidos": 0
       },
       "fuera": {
-        "jugados": 1,
-        "ganados": 1,
+        "jugados": 2,
+        "ganados": 2,
         "empatados": 0,
         "perdidos": 0
       },
-      "golesFavor": 15,
-      "golesContra": 9,
+      "golesFavor": 18,
+      "golesContra": 11,
       "ultimos": [
+        "G",
         "G",
         "G",
         "G"
@@ -32,32 +33,6 @@
     },
     {
       "posicion": 2,
-      "equipo": "C.D. El Pedernoso",
-      "puntos": 10,
-      "casa": {
-        "jugados": 2,
-        "ganados": 2,
-        "empatados": 0,
-        "perdidos": 0
-      },
-      "fuera": {
-        "jugados": 2,
-        "ganados": 1,
-        "empatados": 1,
-        "perdidos": 0
-      },
-      "golesFavor": 23,
-      "golesContra": 6,
-      "ultimos": [
-        "G",
-        "G",
-        "E",
-        "G"
-      ],
-      "puntosSancion": 0
-    },
-    {
-      "posicion": 3,
       "equipo": "El Bonillo F.S.",
       "puntos": 10,
       "casa": {
@@ -83,8 +58,62 @@
       "puntosSancion": 0
     },
     {
-      "posicion": 4,
+      "posicion": 3,
       "equipo": "Almantour Rado Pakolo F.S.",
+      "puntos": 12,
+      "casa": {
+        "jugados": 3,
+        "ganados": 3,
+        "empatados": 0,
+        "perdidos": 0
+      },
+      "fuera": {
+        "jugados": 2,
+        "ganados": 1,
+        "empatados": 0,
+        "perdidos": 1
+      },
+      "golesFavor": 24,
+      "golesContra": 12,
+      "ultimos": [
+        "G",
+        "G",
+        "G",
+        "P",
+        "G"
+      ],
+      "puntosSancion": 0
+    },
+    {
+      "posicion": 4,
+      "equipo": "C.D. El Pedernoso",
+      "puntos": 10,
+      "casa": {
+        "jugados": 2,
+        "ganados": 2,
+        "empatados": 0,
+        "perdidos": 0
+      },
+      "fuera": {
+        "jugados": 3,
+        "ganados": 1,
+        "empatados": 1,
+        "perdidos": 1
+      },
+      "golesFavor": 24,
+      "golesContra": 11,
+      "ultimos": [
+        "G",
+        "G",
+        "E",
+        "G",
+        "P"
+      ],
+      "puntosSancion": 0
+    },
+    {
+      "posicion": 5,
+      "equipo": "C.D. Peñas de San Pedro",
       "puntos": 9,
       "casa": {
         "jugados": 2,
@@ -93,53 +122,29 @@
         "perdidos": 0
       },
       "fuera": {
-        "jugados": 2,
+        "jugados": 3,
         "ganados": 1,
         "empatados": 0,
-        "perdidos": 1
+        "perdidos": 2
       },
-      "golesFavor": 19,
-      "golesContra": 11,
+      "golesFavor": 21,
+      "golesContra": 12,
       "ultimos": [
-        "G",
-        "G",
-        "G",
-        "P"
-      ],
-      "puntosSancion": 0
-    },
-    {
-      "posicion": 5,
-      "equipo": "C.D. Quintanar F.S. Biopastis",
-      "puntos": 6,
-      "casa": {
-        "jugados": 2,
-        "ganados": 2,
-        "empatados": 0,
-        "perdidos": 0
-      },
-      "fuera": {
-        "jugados": 1,
-        "ganados": 0,
-        "empatados": 0,
-        "perdidos": 1
-      },
-      "golesFavor": 13,
-      "golesContra": 9,
-      "ultimos": [
+        "P",
         "G",
         "P",
+        "G",
         "G"
       ],
       "puntosSancion": 0
     },
     {
       "posicion": 6,
-      "equipo": "C.D. Peñas de San Pedro",
-      "puntos": 6,
+      "equipo": "C.D. Teatinos F.S.",
+      "puntos": 9,
       "casa": {
-        "jugados": 2,
-        "ganados": 2,
+        "jugados": 3,
+        "ganados": 3,
         "empatados": 0,
         "perdidos": 0
       },
@@ -149,10 +154,11 @@
         "empatados": 0,
         "perdidos": 2
       },
-      "golesFavor": 17,
-      "golesContra": 9,
+      "golesFavor": 12,
+      "golesContra": 15,
       "ultimos": [
         "P",
+        "G",
         "G",
         "P",
         "G"
@@ -161,25 +167,25 @@
     },
     {
       "posicion": 7,
-      "equipo": "C.D. Teatinos F.S.",
+      "equipo": "C.D. Quintanar F.S. Biopastis",
       "puntos": 6,
       "casa": {
-        "jugados": 2,
+        "jugados": 3,
         "ganados": 2,
         "empatados": 0,
-        "perdidos": 0
+        "perdidos": 1
       },
       "fuera": {
-        "jugados": 2,
+        "jugados": 1,
         "ganados": 0,
         "empatados": 0,
-        "perdidos": 2
+        "perdidos": 1
       },
-      "golesFavor": 8,
+      "golesFavor": 15,
       "golesContra": 12,
       "ultimos": [
-        "P",
         "G",
+        "P",
         "G",
         "P"
       ],
@@ -187,7 +193,7 @@
     },
     {
       "posicion": 8,
-      "equipo": "Balneario de Benito Villanueva Futsal",
+      "equipo": "Balazote F.S.",
       "puntos": 6,
       "casa": {
         "jugados": 2,
@@ -201,8 +207,8 @@
         "empatados": 0,
         "perdidos": 1
       },
-      "golesFavor": 13,
-      "golesContra": 19,
+      "golesFavor": 8,
+      "golesContra": 11,
       "ultimos": [
         "P",
         "P",
@@ -213,23 +219,25 @@
     },
     {
       "posicion": 9,
-      "equipo": "Balazote F.S.",
-      "puntos": 3,
+      "equipo": "U.D. Albacete Futsal \"B\"",
+      "puntos": 6,
       "casa": {
         "jugados": 1,
-        "ganados": 0,
-        "empatados": 0,
-        "perdidos": 1
-      },
-      "fuera": {
-        "jugados": 2,
         "ganados": 1,
         "empatados": 0,
-        "perdidos": 1
+        "perdidos": 0
       },
-      "golesFavor": 7,
-      "golesContra": 11,
+      "fuera": {
+        "jugados": 4,
+        "ganados": 1,
+        "empatados": 0,
+        "perdidos": 3
+      },
+      "golesFavor": 19,
+      "golesContra": 16,
       "ultimos": [
+        "P",
+        "G",
         "P",
         "P",
         "G"
@@ -238,26 +246,27 @@
     },
     {
       "posicion": 10,
-      "equipo": "U.D. Albacete Futsal \"B\"",
-      "puntos": 3,
+      "equipo": "Balneario de Benito Villanueva Futsal",
+      "puntos": 6,
       "casa": {
-        "jugados": 1,
+        "jugados": 2,
         "ganados": 1,
         "empatados": 0,
-        "perdidos": 0
+        "perdidos": 1
       },
       "fuera": {
         "jugados": 3,
-        "ganados": 0,
+        "ganados": 1,
         "empatados": 0,
-        "perdidos": 3
+        "perdidos": 2
       },
-      "golesFavor": 11,
-      "golesContra": 14,
+      "golesFavor": 16,
+      "golesContra": 23,
       "ultimos": [
         "P",
-        "G",
         "P",
+        "G",
+        "G",
         "P"
       ],
       "puntosSancion": 0
@@ -267,10 +276,10 @@
       "equipo": "Tobarra F.S.",
       "puntos": 3,
       "casa": {
-        "jugados": 2,
+        "jugados": 3,
         "ganados": 1,
         "empatados": 0,
-        "perdidos": 1
+        "perdidos": 2
       },
       "fuera": {
         "jugados": 2,
@@ -278,10 +287,11 @@
         "empatados": 0,
         "perdidos": 2
       },
-      "golesFavor": 4,
-      "golesContra": 26,
+      "golesFavor": 6,
+      "golesContra": 34,
       "ultimos": [
         "G",
+        "P",
         "P",
         "P",
         "P"
@@ -299,14 +309,15 @@
         "perdidos": 1
       },
       "fuera": {
-        "jugados": 2,
+        "jugados": 3,
         "ganados": 0,
         "empatados": 0,
-        "perdidos": 2
+        "perdidos": 3
       },
       "golesFavor": 5,
-      "golesContra": 11,
+      "golesContra": 12,
       "ultimos": [
+        "P",
         "P",
         "P",
         "P"
@@ -318,10 +329,10 @@
       "equipo": "C.D. Futsal Almoradiel",
       "puntos": 0,
       "casa": {
-        "jugados": 2,
+        "jugados": 3,
         "ganados": 0,
         "empatados": 0,
-        "perdidos": 2
+        "perdidos": 3
       },
       "fuera": {
         "jugados": 2,
@@ -329,9 +340,10 @@
         "empatados": 0,
         "perdidos": 2
       },
-      "golesFavor": 5,
-      "golesContra": 12,
+      "golesFavor": 8,
+      "golesContra": 16,
       "ultimos": [
+        "P",
         "P",
         "P",
         "P",
