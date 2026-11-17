@@ -6,7 +6,7 @@
 // Uso:
 //   node scripts/actualizar-clasificacion.js            # refresca la jornada guardada en cada fichero
 //   node scripts/actualizar-clasificacion.js 5          # descarga la jornada 5 para todos los ficheros
-//   node scripts/actualizar-clasificacion.js --auto     # usa la última jornada ya disputada según src/content/partidos (para CI)
+//   node scripts/actualizar-clasificacion.js --auto     # usa la última jornada ya disputada según src/content/partidos (para CI; incluye jornadas de descanso)
 //
 // La URL de origen (cod_primaria/codcompeticion/codgrupo) se lee del campo
 // "fuente" que ya guarda cada fichero de clasificación.
@@ -126,27 +126,47 @@ function parsearClasificacion(html) {
   return equipos;
 }
 
-function buscarFechaJornada(competicion, jornada) {
-  for (const nombreFichero of readdirSync(PARTIDOS_DIR)) {
-    const partido = JSON.parse(readFileSync(join(PARTIDOS_DIR, nombreFichero), 'utf8'));
-    if (partido.competicion === competicion && partido.jornada === jornada) {
-      return partido.fecha.slice(0, 10);
-    }
-  }
-  return null;
-}
+const DIA_MS = 24 * 60 * 60 * 1000;
+const aISO = (ms) => new Date(ms).toISOString().slice(0, 10);
 
-// Última jornada de la competición con algún partido ya disputado (fecha
-// anterior al inicio del día de hoy). Devuelve null si no hay ninguna.
-function ultimaJornadaDisputada(competicion) {
-  const hoy = new Date().toISOString().slice(0, 10);
-  let ultima = null;
+// Mapa jornada -> fecha (YYYY-MM-DD) de la competición, a partir de los
+// partidos de El Bonillo. Somos un grupo impar y cada semana descansa un
+// equipo: las jornadas en las que descansamos no tienen fichero en
+// src/content/partidos, así que se estiman como una semana después de la
+// jornada anterior conocida (las jornadas son semanales).
+function fechasJornadas(competicion) {
+  const conocidas = new Map();
   for (const nombreFichero of readdirSync(PARTIDOS_DIR)) {
     const partido = JSON.parse(readFileSync(join(PARTIDOS_DIR, nombreFichero), 'utf8'));
     if (partido.competicion !== competicion || !partido.jornada) continue;
-    if (partido.fecha.slice(0, 10) < hoy && (ultima === null || partido.jornada > ultima)) {
-      ultima = partido.jornada;
+    const fecha = partido.fecha.slice(0, 10);
+    const previa = conocidas.get(partido.jornada);
+    if (!previa || fecha < previa) conocidas.set(partido.jornada, fecha);
+  }
+
+  const numeros = [...conocidas.keys()];
+  const fechas = new Map();
+  if (numeros.length === 0) return fechas;
+  const max = Math.max(...numeros);
+  let anterior = null;
+  for (let j = Math.min(...numeros); j <= max; j++) {
+    if (conocidas.has(j)) {
+      anterior = conocidas.get(j);
+    } else if (anterior) {
+      anterior = aISO(Date.parse(anterior) + 7 * DIA_MS); // jornada de descanso
     }
+    fechas.set(j, anterior);
+  }
+  return fechas;
+}
+
+// Última jornada de la competición cuya fecha es anterior a hoy, incluidas
+// las jornadas en las que El Bonillo descansa. Null si no hay ninguna.
+function ultimaJornadaDisputada(competicion) {
+  const hoy = new Date().toISOString().slice(0, 10);
+  let ultima = null;
+  for (const [jornada, fecha] of fechasJornadas(competicion)) {
+    if (fecha < hoy && (ultima === null || jornada > ultima)) ultima = jornada;
   }
   return ultima;
 }
@@ -164,9 +184,10 @@ async function actualizarFichero(nombreFichero, jornadaSolicitada, auto) {
   const html = await descargarHtml(urlFuente.toString());
   const equipos = parsearClasificacion(html);
 
-  const fechaJornada = buscarFechaJornada(actual.competicion, jornada) ?? new Date().toISOString().slice(0, 10);
-  if (!buscarFechaJornada(actual.competicion, jornada)) {
-    console.warn(`  ! No se ha encontrado el partido de la jornada ${jornada} en src/content/partidos; se usa la fecha de hoy (${fechaJornada}).`);
+  let fechaJornada = fechasJornadas(actual.competicion).get(jornada);
+  if (!fechaJornada) {
+    fechaJornada = new Date().toISOString().slice(0, 10);
+    console.warn(`  ! No se ha podido determinar la fecha de la jornada ${jornada} desde src/content/partidos; se usa la fecha de hoy (${fechaJornada}).`);
   }
 
   const actualizado = {

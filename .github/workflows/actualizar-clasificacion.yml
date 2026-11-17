@@ -2,9 +2,9 @@ name: Actualizar clasificación
 
 on:
   schedule:
-    # Domingo y lunes por la noche (tras las jornadas) y miércoles (aplazados).
-    # Hora UTC: 21:30 UTC = 22:30/23:30 en Madrid.
-    - cron: '30 21 * * 0,1,3'
+    # Los partidos son viernes, sábado y domingo: se actualiza esas tres noches.
+    # Hora UTC: 21:30 UTC = 22:30 (invierno) / 23:30 (verano) en Madrid.
+    - cron: '30 21 * * 0,5,6'
   workflow_dispatch:
 
 permissions:
@@ -19,9 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
 
