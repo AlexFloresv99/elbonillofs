@@ -118,10 +118,10 @@
       "equipo": "C.D. Peñas de San Pedro",
       "puntos": 9,
       "casa": {
-        "jugados": 2,
+        "jugados": 3,
         "ganados": 2,
         "empatados": 0,
-        "perdidos": 0
+        "perdidos": 1
       },
       "fuera": {
         "jugados": 3,
@@ -129,14 +129,14 @@
         "empatados": 0,
         "perdidos": 2
       },
-      "golesFavor": 21,
-      "golesContra": 12,
+      "golesFavor": 23,
+      "golesContra": 18,
       "ultimos": [
-        "P",
         "G",
         "P",
         "G",
-        "G"
+        "G",
+        "P"
       ],
       "puntosSancion": 0
     },
@@ -222,6 +222,33 @@
     },
     {
       "posicion": 9,
+      "equipo": "Balazote F.S.",
+      "puntos": 6,
+      "casa": {
+        "jugados": 2,
+        "ganados": 1,
+        "empatados": 0,
+        "perdidos": 1
+      },
+      "fuera": {
+        "jugados": 3,
+        "ganados": 1,
+        "empatados": 0,
+        "perdidos": 2
+      },
+      "golesFavor": 12,
+      "golesContra": 18,
+      "ultimos": [
+        "P",
+        "P",
+        "P",
+        "G",
+        "G"
+      ],
+      "puntosSancion": 0
+    },
+    {
+      "posicion": 10,
       "equipo": "U.D. Albacete Futsal \"B\"",
       "puntos": 7,
       "casa": {
@@ -244,32 +271,6 @@
         "P",
         "G",
         "E"
-      ],
-      "puntosSancion": 0
-    },
-    {
-      "posicion": 10,
-      "equipo": "Balazote F.S.",
-      "puntos": 3,
-      "casa": {
-        "jugados": 2,
-        "ganados": 1,
-        "empatados": 0,
-        "perdidos": 1
-      },
-      "fuera": {
-        "jugados": 2,
-        "ganados": 0,
-        "empatados": 0,
-        "perdidos": 2
-      },
-      "golesFavor": 6,
-      "golesContra": 16,
-      "ultimos": [
-        "P",
-        "P",
-        "P",
-        "G"
       ],
       "puntosSancion": 0
     },
