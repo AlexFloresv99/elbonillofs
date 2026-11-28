@@ -142,32 +142,6 @@
     },
     {
       "posicion": 6,
-      "equipo": "C.D. Quintanar F.S. Biopastis",
-      "puntos": 6,
-      "casa": {
-        "jugados": 3,
-        "ganados": 2,
-        "empatados": 0,
-        "perdidos": 1
-      },
-      "fuera": {
-        "jugados": 1,
-        "ganados": 0,
-        "empatados": 0,
-        "perdidos": 1
-      },
-      "golesFavor": 15,
-      "golesContra": 12,
-      "ultimos": [
-        "G",
-        "P",
-        "G",
-        "P"
-      ],
-      "puntosSancion": 0
-    },
-    {
-      "posicion": 7,
       "equipo": "Balneario de Benito Villanueva Futsal",
       "puntos": 9,
       "casa": {
@@ -194,7 +168,7 @@
       "puntosSancion": 0
     },
     {
-      "posicion": 8,
+      "posicion": 7,
       "equipo": "C.D. Teatinos F.S.",
       "puntos": 9,
       "casa": {
@@ -217,6 +191,33 @@
         "P",
         "G",
         "P"
+      ],
+      "puntosSancion": 0
+    },
+    {
+      "posicion": 8,
+      "equipo": "C.D. Quintanar F.S. Biopastis",
+      "puntos": 7,
+      "casa": {
+        "jugados": 3,
+        "ganados": 2,
+        "empatados": 0,
+        "perdidos": 1
+      },
+      "fuera": {
+        "jugados": 2,
+        "ganados": 0,
+        "empatados": 1,
+        "perdidos": 1
+      },
+      "golesFavor": 17,
+      "golesContra": 14,
+      "ultimos": [
+        "G",
+        "P",
+        "G",
+        "P",
+        "E"
       ],
       "puntosSancion": 0
     },
@@ -331,11 +332,11 @@
     {
       "posicion": 13,
       "equipo": "C.D. Lezuza",
-      "puntos": 0,
+      "puntos": 1,
       "casa": {
-        "jugados": 1,
+        "jugados": 2,
         "ganados": 0,
-        "empatados": 0,
+        "empatados": 1,
         "perdidos": 1
       },
       "fuera": {
@@ -344,13 +345,14 @@
         "empatados": 0,
         "perdidos": 3
       },
-      "golesFavor": 5,
-      "golesContra": 12,
+      "golesFavor": 7,
+      "golesContra": 14,
       "ultimos": [
         "P",
         "P",
         "P",
-        "P"
+        "P",
+        "E"
       ],
       "puntosSancion": 0
     }
